@@ -1,39 +1,32 @@
-// Ne sme isti link dva puta. Dodaj proveru.
-
 export const fList = [
     {
         title: "youtube",
-        image: "images/youtube.png",
+        image: "https://www.google.com/s2/favicons?domain=https://youtube.com&sz=64",
         link: "https://youtube.com/"
     },
-
     {
         title: "gmail personal",
-        image: "images/gmail.png",
+        image: "https://www.google.com/s2/favicons?domain=https://mail.google.com&sz=64",
         link: "https://mail.google.com/mail/u/1/#inbox"
     },
-
     {
         title: "gmail",
-        image: "images/gmail.png",
+        image: "https://www.google.com/s2/favicons?domain=https://mail.google.com&sz=64",
         link: "https://mail.google.com/mail/u/0/#inbox"
     },
-
     {
         title: "translate",
-        image: "images/translate.png",
+        image: "https://www.google.com/s2/favicons?domain=https://translate.google.com&sz=64",
         link: "https://translate.google.rs/u/1/?hl=sr&sl=en&tl=de&op=translate"
     },
-
     {
         title: "eponuda",
-        image: "images/eponuda.jpg",
+        image: "https://www.google.com/s2/favicons?domain=https://www.eponuda.com&sz=64",
         link: "https://www.eponuda.com/"
     },
-    
     {
         title: "kupujem prodajem",
-        image: "images/kp.png",
+        image: "https://www.google.com/s2/favicons?domain=https://novi.kupujemprodajem.com&sz=64",
         link: "https://novi.kupujemprodajem.com/"
     }
 ];

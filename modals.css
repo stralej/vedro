@@ -1,0 +1,178 @@
+.modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+    background-color: #0004;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    opacity: 0;
+    padding: 10px 50px;
+    gap: 20px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity .3s ease-in-out, top .3s ease-in-out;
+}
+
+.modal-active {
+    opacity: 1;
+    top: 50%;
+}
+
+.modal-disabled {
+    top: 60%;
+}
+
+.modal .modal-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.modal .modal-buttons button {
+    color: white;
+    font-size: 20px;
+    text-transform: capitalize;
+    background-color: #0004;
+    border: none;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    position: relative;
+    padding: 10px 15px;
+    top: 0;
+    transition: 300ms;
+}
+
+.add-new-favorite-modal {
+    width: 400px;
+}
+
+.add-new-favorite-modal .favorite-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-new-favorite-modal .favorite-info .favorite-img {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: box-shadow .3s;
+    outline: none;
+}
+
+.add-new-favorite-modal .favorite-info .favorite-text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+}
+
+.add-new-favorite-modal .favorite-info .favorite-text div {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    gap: 2px;
+}
+
+.add-new-favorite-modal .favorite-info .favorite-text label {
+    text-transform: capitalize;
+}
+
+.add-new-favorite-modal .favorite-info .favorite-text input {
+    background-color: #0004;
+    outline: none;
+    border: none;
+    width: 250px;
+    padding: 8px;
+    border-radius: 10px;
+    transition: box-shadow .3s;
+}
+
+.add-new-favorite-modal .favorite-info .favorite-text input:focus {
+    box-shadow: 0 0 0 3px #0008;
+}
+
+.add-new-favorite-modal .favorite-img-input {
+    height: 100px;
+    width: 140px;
+    background-color: #0004;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    padding: 20px;
+    position: relative;
+    transition: box-shadow .3s;
+}
+
+.add-new-favorite-modal .favorite-img-input:hover {
+    box-shadow: 0 0 0 3px #0008;
+}
+
+.add-new-favorite-modal .favorite-img-input img {
+    height: 100px;
+    width: 100px;
+    object-fit: contain;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.add-new-favorite-modal input[type="file"] {
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.add-new-favorite-modal .modal-buttons .disabled-favorite-button {
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: .5;
+}
+
+.confirmation-modal {
+    justify-content: flex-start;
+    height: 90px;
+    width: 110px;
+    backdrop-filter: blur(5px);
+    padding: 0;
+}
+
+.confirmation-modal p {
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin-top: 15px;
+}
+
+.confirmation-modal .modal-buttons {
+    gap: 0;
+    position: absolute;
+    bottom: 10px;
+}
+
+.confirmation-modal .modal-buttons button {
+    border-radius: 0;
+    padding: 5px 10px;
+}
+
+.confirmation-modal .modal-buttons button:first-child {
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+.confirmation-modal .modal-buttons button:last-child {
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.confirmation-modal .modal-buttons button i {
+    line-height: 0;
+}

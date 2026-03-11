@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start page</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="modals.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="favorites.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
@@ -41,8 +44,7 @@
                         <img src="" alt="">
                         <p></p>
                     </article>
-
-                    <i class="fa-solid fa-xmark favorite-x close-favorite-disabled" style="color: #b66e6e;"></i>
+                    <i class="fa-solid fa-xmark favorite-x close-favorite-disabled" style="color: #ccc;"></i>
                 </a>
             </template>
     
@@ -56,18 +58,15 @@
                                 <label for="favorite-title">title</label>
                                 <input type="text" id="favorite-title">
                             </div>
-        
                             <div class="favorite-link">
                                 <label for="favorite-link">link</label>
                                 <input type="text" id="favorite-link">
                             </div>
                         </div>
-    
                         <div class="favorite-img-input">
                             <img src="./images/image-solid.png" alt="NO IMAGE">
                             <input type="file" accept=".jpg .png .jpeg .gif .ico">
                         </div>
-
                     </div>
     
                     <div class="modal-buttons">
@@ -80,7 +79,6 @@
             <template data-template="confirmation-modal">
                 <div class="modal confirmation-modal">
                     <p></p>
-
                     <div class="modal-buttons">
                         <button><i class="fa-solid fa-check"></i></button>
                         <button><i class="fa-solid fa-xmark" style="color: #ccc;"></i></button>
@@ -95,39 +93,60 @@
     </div>
 
     <div class="settings" id="settings">
-        <p>Settings</p>
+        <div class="settings-inner">
+            <p>Settings</p>
 
-        <section class="settings-list">
-            <section class="display-list">
-                <section>
-                    <p>Show welcome message</p>
-                    <div class="checkbox"><i class="fa-solid fa-check" id="welcome-checkbox"></i></div>
+            <section class="settings-list">
+                <section class="display-list">
+                    <section>
+                        <p>Show welcome message</p>
+                        <div class="checkbox"><i class="fa-solid fa-check" id="welcome-checkbox"></i></div>
+                    </section>
+                    <section>
+                        <p>Show time</p>
+                        <div class="checkbox"><i class="fa-solid fa-check" id="time-checkbox"></i></div>
+                    </section>
+                    <section>
+                        <p>Show favorites</p>
+                        <div class="checkbox"><i class="fa-solid fa-check" id="favorites-checkbox"></i></div>
+                    </section>
                 </section>
-
-                <section>
-                    <p>Show time</p>
-                    <div class="checkbox"><i class="fa-solid fa-check" id="time-checkbox"></i></div>
-                </section>
-
-                <section>
-                    <p>Show favorites</p>
-                    <div class="checkbox"><i class="fa-solid fa-check" id="favorites-checkbox"></i></div>
-                </section>
-            </section>
-            
-            <section class="search-engine-wrapper">
-                <p>Search engine</p>
                 
-                <section class="search-engine-list">
-                    <template data-template="search-engine">
-                        <div class="search-engine">
-                            <img src="" alt="">
-                            <p></p>
+                <section class="background-section">
+                    <p>Wallpapers</p>
+                    <div class="background-controls">
+                        <button class="bg-mode-btn" id="bg-mode-random" title="Use random Picsum photos">
+                            <i class="fa-solid fa-rotate"></i> Random
+                        </button>
+                        <button class="bg-mode-btn" id="bg-mode-library" title="Use your saved images">
+                            <i class="fa-solid fa-images"></i> My library
+                        </button>
+                    </div>
+                    <div id="bg-library-panel" class="bg-library-panel">
+                        <label class="bg-add-btn">
+                            <i class="fa-solid fa-plus"></i> Add images
+                            <input type="file" accept=".jpg,.jpeg,.png,.webp,.gif" id="background-input" multiple>
+                        </label>
+                        <div id="bg-thumbnails" class="bg-thumbnails">
+                            <p class="bg-empty-hint">No images saved yet.</p>
                         </div>
-                    </template>
+                    </div>
+                </section>
+
+                <section class="search-engine-wrapper">
+                    <p>Search engine</p>
+                    <section class="search-engine-list">
+                        <template data-template="search-engine">
+                            <div class="search-engine">
+                                <img src="" alt="">
+                                <p></p>
+                            </div>
+                        </template>
+                    </section>
                 </section>
             </section>
-        </section>
+            <a class="settings-footer" href="https://github.com/stralej" target="_blank">@stralej · 2026 · Built with ❤️</a>
+        </div>
     </div>
 
     <script src="script.js" type="module"></script>

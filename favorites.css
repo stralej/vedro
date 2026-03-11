@@ -1,0 +1,115 @@
+.favorites-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorites {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    max-width: 90%;
+    background-color: #0004;
+    backdrop-filter: blur(10px);
+    width: fit-content;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 20vh;
+    border-radius: 15px;
+    gap: 10px;
+    padding: 10px;
+    user-select: none;
+    transition: transform .3s;
+}
+
+.favorites a {
+    width: 110px;
+    text-decoration: none;
+    position: relative;
+    outline: none;
+    overflow: visible;
+}
+
+.favorites a .favorite-x {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15px;
+    width: 15px;
+    background-color: transparent;
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    padding: 2px;
+    transition: opacity .3s, top .3s, right .3s, box-shadow .3s;
+}
+
+.favorites a .favorite-x:hover {
+    box-shadow: 0 0 0 2px #0008;
+}
+
+.favorites a:hover .fa-xmark {
+    opacity: 1;
+    top: -2px;
+    right: -2px;
+}
+
+.favorites a .close-favorite-invisible {
+    display: none;
+}
+
+.favorites article {
+    display: flex;
+    flex-direction: column;
+    height: 70px;
+    width: 80px;
+    font-size: 14px;
+    background-color: #0004;
+    border-radius: 15px;
+    padding: 10px 15px;
+    position: relative;
+    text-align: center;
+    justify-content: space-around;
+    align-items: center;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: box-shadow .3s;
+}
+
+.favorites article:hover,
+.favorites article:focus {
+    box-shadow: 0 0 0 4px #0008;
+}
+
+.favorites article i {
+    font-size: 24px;
+}
+
+.favorites article img {
+    width: 28px;
+    border-radius: 5px;
+}
+
+/* ── Drag to reorder ── */
+.drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.drag-source-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.drag-placeholder {
+    border-radius: 15px;
+    background-color: #fff2;
+    border: 2px dashed #fff4;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}

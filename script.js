@@ -1,457 +1,669 @@
 import { fList, searchEngineList } from "./data.js";
 
-document.onload = Time();
+// ─── Time & Welcome ──────────────────────────────────────────────────────────
 
-(function() {
-    const storage = JSON.parse(localStorage.getItem("checkboxes"));
-    if(storage !== null) checkCheckBoxStatus();
-}());
+function Time() {
+    const p = document.getElementById("time");
+    const welcome = document.getElementById("welcome");
+    const d = new Date();
+
+    let h = d.getHours();
+    let m = d.getMinutes();
+    let s = d.getSeconds();
+
+    p.innerText = [h, m, s].map(v => String(v).padStart(2, "0")).join(":");
+
+    if (h >= 3  && h < 12) welcome.innerText = "Good morning 🌻";
+    if (h >= 12 && h < 19) welcome.innerText = "Good afternoon ☀️";
+    if (h >= 19 && h < 23) welcome.innerText = "Good evening 🌃";
+    if (h >= 23 || h < 3)  welcome.innerText = "Good night 🌙";
+}
+
+Time();
+setInterval(Time, 500);
+
+
+// ─── Storage bootstrap ───────────────────────────────────────────────────────
 
 window.addEventListener("load", () => {
-    // Creates an unique localStorage for whole page.
     makeStorage();
     checkCheckBoxStatus();
+    const favs = JSON.parse(localStorage.getItem("favorites"));
+    // Migrate any locally stored image paths to favicon URLs
+    const migrated = favs.map(f => {
+        if (!f.image || f.image.startsWith("images/") || f.image.startsWith("./images/")) {
+            try {
+                const origin = new URL(f.link).origin;
+                return { ...f, image: `https://www.google.com/s2/favicons?domain=${origin}&sz=64` };
+            } catch { return f; }
+        }
+        return f;
+    });
+    localStorage.setItem("favorites", JSON.stringify(migrated));
+    fillFavorites(migrated);
 });
 
 function makeStorage() {
-    // Checks whether "checkboxes" key exists or not. If it doesn't then the storage will be created.
-    if(localStorage.getItem("checkboxes") === null) {
-        // Every property represents one checkbox with a key that will be used as a "type" of checkbox and a value which is whether the checkbox is active or not.
-        const checkboxes = { welcome: true, time: true, favorites: true };
-        // JSON.stringify() got to be used if .setItem() type is an object.
-        localStorage.setItem("checkboxes", JSON.stringify(checkboxes));
-    }
+    if (localStorage.getItem("checkboxes") === null)
+        localStorage.setItem("checkboxes", JSON.stringify({ welcome: true, time: true, favorites: true }));
 
-    if(localStorage.getItem("favorites") === null) localStorage.setItem("favorites", JSON.stringify(fList));
-    if(localStorage.getItem("searchEngine") === null) localStorage.setItem("searchEngine", "https://www.google.com/search?q=");
+    if (localStorage.getItem("favorites") === null)
+        localStorage.setItem("favorites", JSON.stringify(fList));
+
+    if (localStorage.getItem("searchEngine") === null)
+        localStorage.setItem("searchEngine", searchEngineList.find(e => e.selected)?.link ?? searchEngineList[0].link);
 }
 
-function Time() {
-    // getting & displaying the timeF
 
-    var p = document.getElementById("time");
-
-    var d = new Date();
-
-    var h = d.getHours()
-    var m = d.getMinutes()
-    var s = d.getSeconds()
-
-    if (h < 10) {
-        h = "0" + h;
-    }
-
-    if (m < 10) {
-        m = "0" + m;
-    }
-
-    if (s < 10) {
-        s = "0" + s;
-    }
-
-    p.innerText = h + ":" + m + ":" + s;
-
-    // Making the welcome text fit the time of the day
-
-    var welcome = document.getElementById("welcome");
-
-    if (h >= 3) {
-        welcome.innerText = "Good morning 🌻";
-    }
-
-    if (h >= 12 && h < 19) {
-        welcome.innerText = "Good afternoon ☀️";
-    }
-
-    if (h >= 19) {
-        welcome.innerText = "Good evening 🌃";
-    }
-
-    if (h >= 23 || h < 3) {
-        welcome.innerText = "Good night 🌙";
-    }
-}
-
-// running Time function every half a second (it updates the whole header)
-var timer = setInterval(Time, 500);
-
-
-// Search
-
-const search = document.querySelector(".search i");
-search.onclick = Search;
+// ─── Search ──────────────────────────────────────────────────────────────────
 
 const input = document.getElementById("search");
 
 function Search() {
-    const searchEngine = localStorage.getItem("searchEngine");
-    window.location.href = searchEngine + input.value;
+    const q = input.value.trim();
+    if (!q) return;
+    // If it looks like a URL (has a dot and no spaces) go directly, else search
+    const isUrl = q.includes(".") && !q.includes(" ");
+    if (isUrl) {
+        window.location.href = q.startsWith("http") ? q : "https://" + q;
+    } else {
+        const engine = localStorage.getItem("searchEngine") ?? "https://www.google.com/search?q=";
+        window.location.href = engine + encodeURIComponent(q);
+    }
 }
 
+document.querySelector(".search i").onclick = () => {
+    const engine = localStorage.getItem("searchEngine") ?? "https://www.google.com/search?q=";
+    window.location.href = engine + encodeURIComponent(input.value.trim());
+};
 
-input.addEventListener("keyup", function(event) {
-    if (event.keyCode === 13) {
-        Search();
-    }
-});
+input.addEventListener("keydown", e => { if (e.key === "Enter") Search(); });
 
 
-// Open and close settings function
+// ─── Settings open / close ───────────────────────────────────────────────────
 
 const settingsButton = document.querySelector(".settings-button");
-settingsButton.onclick = Settings;
+const settingsPanel  = document.getElementById("settings");
 
-function Settings() {
-    const settings = document.getElementById("settings");
-    createSearchEngineList();
+let settingsOpen = false;
 
-    if(settings.classList.contains("visible")) return;
-    settings.classList.toggle("visible");
+settingsButton.addEventListener("click", e => {
+    e.stopPropagation();
+    settingsOpen ? closeSettings() : openSettings();
+});
 
-    setTimeout(() => window.addEventListener("click", closeSettings), 1);
+function openSettings() {
+    settingsOpen = true;
+    settingsPanel.classList.add("settings-open");
+    buildSearchEngineList();           // (re)build only when opening
+    setTimeout(() => window.addEventListener("click", onWindowClickSettings), 0);
 }
 
-function createSearchEngineList() {
-    const searchEngineListElement = document.querySelector(".search-engine-list");
+function closeSettings() {
+    settingsOpen = false;
+    settingsPanel.classList.remove("settings-open");
+    window.removeEventListener("click", onWindowClickSettings);
+}
 
-    searchEngineList.forEach(searchEngine => {
-        const searchEngineTemplate = document.querySelector('[data-template="search-engine"]').content.firstElementChild.cloneNode(true);
-        
-        if(searchEngine.selected) searchEngineTemplate.classList.add("selected");
-        searchEngineTemplate.onclick = changeActiveSearchEngine;
+function onWindowClickSettings(e) {
+    if (settingsPanel.contains(e.target)) return;
+    closeSettings();
+}
 
-        searchEngineTemplate.setAttribute("data-search-engine", searchEngine.link);
-        
-        const [img, p] = [...searchEngineTemplate.children];
 
-        img.setAttribute("src", searchEngine.image);
-        img.setAttribute("alt", searchEngine.title.toUpperCase());
+// ─── Search-engine list ──────────────────────────────────────────────────────
 
-        p.innerText = searchEngine.title;
+function buildSearchEngineList() {
+    const listEl = document.querySelector(".search-engine-list");
 
-        searchEngineListElement.appendChild(searchEngineTemplate);
+    // Clear existing entries (but leave the <template>)
+    [...listEl.children].forEach(child => {
+        if (child.tagName.toLowerCase() !== "template") child.remove();
     });
 
-    function changeActiveSearchEngine(e) {
-        const activeSearchEngine = searchEngineListElement.querySelector(".selected");
-        const currentSearchEngine = e.target.tagName.toLowerCase() === "div" ? e.target : e.target.parentElement;
-        
-        if(currentSearchEngine.isEqualNode(activeSearchEngine)) return;
-        
-        activeSearchEngine.classList.remove("selected");
-        currentSearchEngine.classList.add("selected");
+    const savedEngine = localStorage.getItem("searchEngine");
 
-        localStorage.setItem("searchEngine", currentSearchEngine.dataset.searchEngine);
-    }
+    searchEngineList.forEach(engine => {
+        const el = document.querySelector('[data-template="search-engine"]')
+                           .content.firstElementChild.cloneNode(true);
+
+        const isSelected = engine.link === savedEngine || (!savedEngine && engine.selected);
+        if (isSelected) el.classList.add("selected");
+
+        el.setAttribute("data-search-engine", engine.link);
+        el.querySelector("img").setAttribute("src", engine.image);
+        el.querySelector("img").setAttribute("alt", engine.title);
+        el.querySelector("p").innerText = engine.title;
+
+        el.addEventListener("click", () => {
+            listEl.querySelector(".selected")?.classList.remove("selected");
+            el.classList.add("selected");
+            localStorage.setItem("searchEngine", engine.link);
+        });
+
+        listEl.appendChild(el);
+    });
 }
 
-function closeSettings(e) {
-    if(e.target.classList.contains("settings")) return;
 
-    const parentNodes = [];
-    let currentElement = e.target;
+// ─── Checkboxes ──────────────────────────────────────────────────────────────
 
-    while(currentElement.parentNode !== null) {
-        parentNodes.push(currentElement.parentNode);
-        currentElement = currentElement.parentNode;
-    }
-
-    if(parentNodes[parentNodes.length - 1].classList === undefined) parentNodes.pop();
-    
-    let status = true;
-    parentNodes.forEach(parentNode => { if(parentNode.classList.contains("settings")) status = false });
-
-    if(status) {
-        const settings = document.getElementById("settings");
-
-        settings.classList.toggle("visible");
-        window.removeEventListener("click", closeSettings);
-    }
-}
-
-function getCheckboxStatus(type, storage) {
-    let status = false;
-    Object.keys(storage).forEach((key, index) => { if(key === type) status = Object.values(storage)[index] });
-
-    return status;
-}
-
-const checkboxes = document.querySelectorAll(".checkbox");
-checkboxes.forEach(checkbox => { checkbox.onclick = changeCheckboxStatus });
+document.querySelectorAll(".checkbox").forEach(checkbox => {
+    checkbox.addEventListener("click", changeCheckboxStatus);
+});
 
 function changeCheckboxStatus(e) {
-    // JSON.parse() is used to create an object from previously stringified object that is stored in "checkboxes" key.
     const storage = JSON.parse(localStorage.getItem("checkboxes"));
-    // New object defined as "newStorage" is required because the algorithm will set the new object to localStorage "checkboxes" key.
-    // Spread operator (...) is used because the object is identical to the previous one (storage) but just with different value that every key contains.
-    let newStorage = {...storage};
-
-    const type = [...e.target.children][0].id.split("-")[0];
-
-    // Selecting the checkbox based on the parameter "type" (welcome, time, favorites).
-    const checkbox = document.getElementById(`${type}-checkbox`);
-    // Defining the target of checkbox.
+    const icon = e.currentTarget.querySelector("i");
+    const type = icon.id.split("-")[0];
     const field = document.querySelector(`.${type}`);
-    const isChecked = checkbox.classList.contains("fa-check");
+    const isChecked = icon.classList.contains("fa-check");
 
-    if(!isChecked) {
-        checkbox.classList.add("fa-check");
-        field.classList.remove(`invisible-${type}`);
-    }
+    icon.classList.toggle("fa-check", !isChecked);
+    field.classList.toggle(`invisible-${type}`, isChecked);
 
-    else {
-        checkbox.classList.remove("fa-check");
-        field.classList.add(`invisible-${type}`);
-    }
-
-    // Redefining target "type" with the exact opposite value from the previous one.
-    newStorage = {...newStorage, [type]: !isChecked};
-    localStorage.setItem("checkboxes", JSON.stringify(newStorage));
+    localStorage.setItem("checkboxes", JSON.stringify({ ...storage, [type]: !isChecked }));
 }
 
 function checkCheckBoxStatus() {
-    const checkboxes = [...document.querySelectorAll(".checkbox i")];
-    // JSON.parse() is used to create an object from previously stringified object that is stored in "checkboxes" key.
     const storage = JSON.parse(localStorage.getItem("checkboxes"));
-    
-    checkboxes.forEach(checkbox => {
-        // Based on the fact that every checkbox has an id with an unique prefix (welcome, time, favorites) followed by "-" .split() is used to get the unique "type" of checkbox.
-        const type = checkbox.id.split("-")[0];
-        const isChecked = getCheckboxStatus(type, storage);
 
-        // Defining the target of checkbox.
+    document.querySelectorAll(".checkbox i").forEach(icon => {
+        const type = icon.id.split("-")[0];
+        const active = storage[type] ?? true;
         const field = document.querySelector(`.${type}`);
 
-        if(isChecked) {
-            checkbox.classList.add("fa-check");
-            field.classList.remove(`invisible-${type}`);
-        }
-
-        else {
-            checkbox.classList.remove("fa-check");
-            field.classList.add(`invisible-${type}`);
-        }
+        icon.classList.toggle("fa-check", active);
+        field?.classList.toggle(`invisible-${type}`, !active);
     });
 }
 
-// Adding favorite
 
-const favorites = document.querySelector(".favorites");
-const favoritesList = JSON.parse(localStorage.getItem("favorites"));
-const addNew = document.querySelector(".add-new");
+// ─── Favorites ───────────────────────────────────────────────────────────────
 
-fillFavorites(favoritesList);
+const favoritesEl = document.querySelector(".favorites");
+const addNewBtn   = document.querySelector(".add-new");
 
 function fillFavorites(list) {
-    [...favorites.children].forEach(favorite => {
-        if(
-            !favorite.classList.contains("add-new") &&
-            favorite.tagName.toLowerCase() !== "template"
-        ) favorite.remove();
+    [...favoritesEl.children].forEach(child => {
+        if (!child.classList.contains("add-new") && child.tagName.toLowerCase() !== "template")
+            child.remove();
     });
-    
+
     list.forEach(favorite => {
-        const anchor = document.querySelector('[data-template="favorite"]').content.firstElementChild.cloneNode(true);
+        const anchor = document.querySelector('[data-template="favorite"]')
+                               .content.firstElementChild.cloneNode(true);
         anchor.setAttribute("href", favorite.link);
-    
-        favorites.appendChild(anchor);
-    
-        const [article, closeFavoriteButton] = [...anchor.children];
-        const [img, p] = [...article.children];
-    
+
+        const [article, closeBtn] = [...anchor.children];
+        const [img, p]            = [...article.children];
+
         img.setAttribute("src", favorite.image);
         img.setAttribute("alt", favorite.title.toUpperCase());
-    
         p.innerText = favorite.title;
 
-        closeFavoriteButton.onclick = closeFavorite;
-        
-        favorites.insertBefore(anchor, addNew);
+        closeBtn.addEventListener("click", e => {
+            e.preventDefault();
+            e.stopPropagation();
+            openConfirmationModal(anchor, list);
+        });
+
+        setupDrag(anchor, list);
+
+        favoritesEl.insertBefore(anchor, addNewBtn);
     });
 
     localStorage.setItem("favorites", JSON.stringify(list));
-
-    function closeFavorite(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const target = e.target.parentNode;
-        openConfirmationModal(target);
-    }
-
-    function openConfirmationModal(target) {
-        const confirmationModal = document.querySelector('[data-template="confirmation-modal"]').content.firstElementChild.cloneNode(true);
-        const article = [...target.children][0];
-
-        const closeFavoriteButton = [...target.children][1];
-        
-        closeFavoriteButton.style.opacity = "0";
-        setTimeout(() => closeFavoriteButton.classList.add("close-favorite-invisible"), 300);
-        
-        article.appendChild(confirmationModal);
-
-        setTimeout(() => {
-            confirmationModal.classList.add("modal-active");
-
-            const [p, buttons] = [...confirmationModal.children];
-
-            p.innerText = `delete?`;
-
-            const [yes, no] = [...buttons.children];
-
-            yes.onclick = e => {
-                e.stopPropagation();
-                e.preventDefault();
-                
-                const targetHref = target.href;
-                const newFavoritesList = list.filter(favorite => favorite.link !== targetHref);
-                
-                fillFavorites(newFavoritesList);
-                closeConfirmationModal(confirmationModal, closeFavoriteButton);
-            }
-
-            no.onclick = e => {
-                e.stopPropagation();
-                e.preventDefault();
-
-                closeConfirmationModal(confirmationModal, closeFavoriteButton);
-            }
-        }, 300);
-    }
-
-    function closeConfirmationModal(confirmationModal, closeFavoriteButton) {
-        confirmationModal.classList.remove("modal-active");
-        confirmationModal.classList.add("modal-disabled");
-
-        closeFavoriteButton.style.opacity = "";
-        closeFavoriteButton.classList.remove("close-favorite-invisible");
-    }
 }
 
-const body = document.querySelector("body");
+// ─── Drag to reorder ─────────────────────────────────────────────────────────
 
-addNew.onclick = () => {
-    const addNewFavoriteModalCheck = document.querySelector(".add-new-favorite-modal");
-    if(addNewFavoriteModalCheck) return;
-    
-    const addNewFavoriteModal = document.querySelector('[data-template="add-new-favorite-modal"]').content.firstElementChild.cloneNode(true);
-    body.appendChild(addNewFavoriteModal);
+let ghost          = null;
+let dragSource     = null;
+let placeholder    = null;
+let longPressTimer = null;
+let isDragging     = false;
+const LONG_PRESS_MS = 450;
+
+function cleanupDrag() {
+    isDragging = false;
+    clearTimeout(longPressTimer);
+    if (ghost)       { ghost.remove();       ghost       = null; }
+    if (placeholder) { placeholder.remove(); placeholder = null; }
+    if (dragSource)  {
+        dragSource.classList.remove("drag-source-hidden");
+        dragSource = null;
+    }
+    document.removeEventListener("mousemove", onDragMove);
+    document.removeEventListener("mouseup",   onDragUp);
+    document.removeEventListener("touchmove", onDragMove);
+    document.removeEventListener("touchend",  onDragUp);
+}
+
+function setupDrag(anchor, list) {
+    let startX = 0, startY = 0;
+
+    function onDown(e) {
+        if (isDragging) return;
+        startX = e.clientX ?? e.touches?.[0].clientX;
+        startY = e.clientY ?? e.touches?.[0].clientY;
+        clearTimeout(longPressTimer);
+        longPressTimer = setTimeout(() => beginDrag(anchor, startX, startY, list), LONG_PRESS_MS);
+    }
+
+    function onMove(e) {
+        const x = e.clientX ?? e.touches?.[0].clientX;
+        const y = e.clientY ?? e.touches?.[0].clientY;
+        if (Math.hypot(x - startX, y - startY) > 6) clearTimeout(longPressTimer);
+    }
+
+    anchor.addEventListener("mousedown",  onDown);
+    anchor.addEventListener("touchstart", onDown, { passive: true });
+    anchor.addEventListener("mousemove",  onMove);
+    anchor.addEventListener("touchmove",  onMove, { passive: true });
+    anchor.addEventListener("mouseup",    () => clearTimeout(longPressTimer));
+    anchor.addEventListener("touchend",   () => clearTimeout(longPressTimer));
+}
+
+function beginDrag(anchor, startX, startY, list) {
+    if (isDragging) return;
+    isDragging = true;
+    dragSource = anchor;
+
+    // Get the article inside the anchor for accurate sizing
+    const article = anchor.querySelector("article");
+    const rect    = article.getBoundingClientRect();
+
+    // Ghost — snapshot exact pixel size from the DOM
+    ghost = article.cloneNode(true);
+    ghost.classList.add("drag-ghost");
+    const computed = getComputedStyle(article);
+    ghost.style.cssText = `
+        position: fixed;
+        pointer-events: none;
+        z-index: 1000;
+        box-sizing: border-box;
+        width: ${rect.width}px;
+        height: ${rect.height}px;
+        left: ${rect.left}px;
+        top: ${rect.top}px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        background-color: ${computed.backgroundColor};
+        border-radius: ${computed.borderRadius};
+        padding: ${computed.padding};
+        font-size: ${computed.fontSize};
+        text-transform: ${computed.textTransform};
+        color: white;
+        opacity: 0.85;
+        transform: scale(1.08);
+        filter: drop-shadow(0 8px 16px #0006);
+        overflow: hidden;
+    `;
+    document.body.appendChild(ghost);
+
+    // Placeholder — same size as the anchor (includes x button space)
+    const anchorRect = anchor.getBoundingClientRect();
+    placeholder = document.createElement("div");
+    placeholder.className    = "drag-placeholder";
+    placeholder.style.width  = anchorRect.width  + "px";
+    placeholder.style.height = anchorRect.height + "px";
+    favoritesEl.insertBefore(placeholder, anchor);
+    anchor.classList.add("drag-source-hidden");
+
+    const offsetX = startX - rect.left;
+    const offsetY = startY - rect.top;
+
+    function onDragMoveLocal(e) {
+        const x = e.clientX ?? e.touches?.[0].clientX;
+        const y = e.clientY ?? e.touches?.[0].clientY;
+
+        ghost.style.left = (x - offsetX) + "px";
+        ghost.style.top  = (y - offsetY) + "px";
+
+        const siblings = [...favoritesEl.children].filter(c =>
+            c !== dragSource &&
+            c !== placeholder &&
+            c !== addNewBtn &&
+            c.tagName.toLowerCase() !== "template"
+        );
+
+        for (const el of siblings) {
+            const r  = el.getBoundingClientRect();
+            if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
+                const mid = r.left + r.width / 2;
+                favoritesEl.insertBefore(placeholder, x < mid ? el : el.nextSibling);
+                break;
+            }
+        }
+    }
+
+    function onDragUpLocal() {
+        favoritesEl.insertBefore(dragSource, placeholder);
+
+        const newList = [...favoritesEl.children]
+            .filter(c =>
+                !c.classList.contains("add-new") &&
+                !c.classList.contains("drag-placeholder") &&
+                c.tagName.toLowerCase() !== "template"
+            )
+            .map(c => list.find(f => f.link === c.getAttribute("href")))
+            .filter(Boolean);
+
+        cleanupDrag();
+
+        localStorage.setItem("favorites", JSON.stringify(newList));
+        fillFavorites(newList);
+    }
+
+    // Store references so cleanupDrag can remove them
+    onDragMove = onDragMoveLocal;
+    onDragUp   = onDragUpLocal;
+
+    document.addEventListener("mousemove", onDragMove);
+    document.addEventListener("mouseup",   onDragUp);
+    document.addEventListener("touchmove", onDragMove, { passive: true });
+    document.addEventListener("touchend",  onDragUp);
+}
+
+// Module-level refs so cleanupDrag can always remove the right listeners
+let onDragMove = null;
+let onDragUp   = null;
+
+// Safety net — if focus leaves the window mid-drag, clean up
+window.addEventListener("blur", cleanupDrag);
+
+function openConfirmationModal(anchor, list) {
+    const modal   = document.querySelector('[data-template="confirmation-modal"]')
+                            .content.firstElementChild.cloneNode(true);
+    const article = anchor.querySelector("article");
+    const closeBtn = anchor.querySelector(".favorite-x");
+
+    closeBtn.style.opacity = "0";
+    article.appendChild(modal);
 
     setTimeout(() => {
-        addNewFavoriteModal.classList.add("modal-active");
-        
-        const inputs = document.querySelectorAll(".add-new-favorite-modal .favorite-info .favorite-text div input");
-        let inputValues = { title: "", link: "" };
-        
-        const addButton = document.querySelector(".add-new-favorite-modal .favorite-buttons button");
+        modal.classList.add("modal-active");
+        modal.querySelector("p").innerText = "delete?";
 
-        inputs.forEach(input => {
-            const inputTitle = input.id.split("-")[1];
-            
-            input.oninput = e => {
-                inputValues = {...inputValues, [inputTitle]: e.target.value};
-                
-                if(
-                    inputValues.title &&
-                    inputValues.link &&
-                    addButton.classList.contains("disabled-favorite-button")
-                ) addButton.classList.remove("disabled-favorite-button");
+        const [yes, no] = modal.querySelectorAll("button");
 
-                else if(
-                    (!inputValues.title ||
-                    !inputValues.link) &&
-                    !addButton.classList.contains("disabled-favorite-button")
-                ) addButton.classList.add("disabled-favorite-button");
-            }
+        yes.addEventListener("click", e => {
+            e.stopPropagation(); e.preventDefault();
+            const newList = list.filter(f => f.link !== anchor.href);
+            fillFavorites(newList);
         });
 
-        setFavoriteIcon();
-
-        addNewFavoriteModalButtons();
-        window.addEventListener("click", closeAddNewFavoriteModal);
-    }, 1);
+        no.addEventListener("click", e => {
+            e.stopPropagation(); e.preventDefault();
+            modal.classList.remove("modal-active");
+            modal.classList.add("modal-disabled");
+            closeBtn.style.opacity = "";
+        });
+    }, 50);
 }
 
-let addNewFavoriteModalStatus = false;
 
-function closeAddNewFavoriteModal(e) {
-    if(e.target.classList.contains("add-new-favorite-modal")) return;
+// ─── Add-new-favorite modal ──────────────────────────────────────────────────
 
-    const parentNodes = [];
-    let currentElement = e.target;
+addNewBtn.addEventListener("click", () => {
+    if (document.querySelector(".add-new-favorite-modal")) return;
 
-    while(currentElement.parentNode !== null) {
-        parentNodes.push(currentElement.parentNode);
-        currentElement = currentElement.parentNode;
+    const modal = document.querySelector('[data-template="add-new-favorite-modal"]')
+                          .content.firstElementChild.cloneNode(true);
+    document.body.appendChild(modal);
+
+    setTimeout(() => modal.classList.add("modal-active"), 10);
+
+    const titleInput = modal.querySelector("#favorite-title");
+    const linkInput  = modal.querySelector("#favorite-link");
+    const addBtn     = modal.querySelector(".modal-buttons .disabled-favorite-button, .modal-buttons button:first-child");
+    const imgEl      = modal.querySelector(".favorite-img-input img");
+    const fileInput  = modal.querySelector(".favorite-img-input input[type='file']");
+
+    // Enable add button only when both fields are filled
+    function checkInputs() {
+        const ready = titleInput.value.trim() && linkInput.value.trim();
+        addBtn.classList.toggle("disabled-favorite-button", !ready);
     }
 
-    if(parentNodes[parentNodes.length - 1].classList === undefined) parentNodes.pop();
+    titleInput.addEventListener("input", checkInputs);
+    linkInput.addEventListener("input", e => {
+        checkInputs();
+        // Auto-fetch favicon after user pauses typing
+        clearTimeout(linkInput._faviconTimer);
+        linkInput._faviconTimer = setTimeout(() => autoFavicon(e.target.value, imgEl), 600);
+    });
 
-    parentNodes.forEach(parentNode => { if(parentNode.classList.contains("add-new-favorite-modal")) addNewFavoriteModalStatus = true })
-    
-    if(!addNewFavoriteModalStatus) removeNewFavoriteModal();
+    // Manual image upload still works as override
+    fileInput.addEventListener("change", async () => {
+        if (!fileInput.files[0]) return;
+        imgEl.src = await fileToBase64(fileInput.files[0]);
+    });
+
+    const [addButton, cancelButton] = modal.querySelectorAll(".modal-buttons button");
+
+    addButton.addEventListener("click", () => {
+        if (addButton.classList.contains("disabled-favorite-button")) return;
+
+        let link = linkInput.value.trim();
+        if (!link.startsWith("http")) link = "https://" + link;
+        if (!link.endsWith("/")) link += "/";
+
+        const newEntry = { title: titleInput.value.trim(), image: imgEl.src, link };
+        const current  = JSON.parse(localStorage.getItem("favorites")) ?? [];
+        fillFavorites([...current, newEntry]);
+        removeAddModal(modal);
+    });
+
+    cancelButton.addEventListener("click", () => removeAddModal(modal));
+
+    setTimeout(() => window.addEventListener("click", outsideModalClick), 0);
+
+    function outsideModalClick(e) {
+        if (modal.contains(e.target)) return;
+        removeAddModal(modal);
+        window.removeEventListener("click", outsideModalClick);
+    }
+});
+
+function removeAddModal(modal) {
+    modal.classList.remove("modal-active");
+    modal.classList.add("modal-disabled");
+    setTimeout(() => modal.remove(), 300);
 }
 
-function addNewFavoriteModalButtons() { 
-    const [add, cancel] = document.querySelectorAll(".add-new-favorite-modal .modal-buttons button");
+// Auto-fetch favicon via Google's public favicon CDN (no CORS issues)
+async function autoFavicon(rawUrl, imgEl) {
+    let url = rawUrl.trim();
+    if (!url) return;
+    if (!url.startsWith("http")) url = "https://" + url;
 
-    add.onclick = () => {
-        if(add.classList.contains("disabled-favorite-button")) return;
-        
-        const inputs = document.querySelectorAll(".add-new-favorite-modal .favorite-info .favorite-text div input");
-        const imageInput = document.querySelector(".add-new-favorite-modal .favorite-img-input img");
-        
-        let inputValues = { title: "", image: imageInput.src, link: "" };
-        
-        inputs.forEach(input => {
-            const inputTitle = input.id.split("-")[1];
-            
-            let link = input.value.startsWith("https://") ? input.value : "https://" + input.value;
-            if(!link.endsWith("/")) link += "/";
+    try {
+        const origin = new URL(url).origin;
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
+        imgEl.src = faviconUrl;
+    } catch {
+        // invalid URL yet — ignore
+    }
+}
 
-            inputValues = {...inputValues, [inputTitle]: inputTitle === "link" ? link : input.value};
+function fileToBase64(file) {
+    return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+    });
+}
+
+
+// ─── Background image (IndexedDB) ────────────────────────────────────────────
+
+const PICSUM = "https://picsum.photos/1920/1080";
+const DB_NAME = "startpage-bg";
+const DB_STORE = "images";
+const DB_VERSION = 1;
+
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = e => e.target.result.createObjectStore(DB_STORE, { autoIncrement: true });
+        req.onsuccess = e => resolve(e.target.result);
+        req.onerror   = e => reject(e.target.error);
+    });
+}
+
+async function dbGetAll() {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, "readonly");
+        const req = tx.objectStore(DB_STORE).getAll();
+        req.onsuccess = e => resolve(e.target.result);
+        req.onerror   = e => reject(e.target.error);
+    });
+}
+
+async function dbGetAllWithKeys() {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, "readonly");
+        const store = tx.objectStore(DB_STORE);
+        const results = [];
+        store.openCursor().onsuccess = e => {
+            const cursor = e.target.result;
+            if (cursor) { results.push({ key: cursor.key, blob: cursor.value }); cursor.continue(); }
+            else resolve(results);
+        };
+    });
+}
+
+async function dbAdd(blob) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, "readwrite");
+        const req = tx.objectStore(DB_STORE).add(blob);
+        req.onsuccess = e => resolve(e.target.result);
+        req.onerror   = e => reject(e.target.error);
+    });
+}
+
+async function dbDelete(key) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(DB_STORE, "readwrite");
+        const req = tx.objectStore(DB_STORE).delete(key);
+        req.onsuccess = () => resolve();
+        req.onerror   = e => reject(e.target.error);
+    });
+}
+
+// "random" | "library"
+function getBgMode() { return localStorage.getItem("bgMode") ?? "random"; }
+function setBgMode(mode) { localStorage.setItem("bgMode", mode); }
+
+async function applyBackground() {
+    const mode = getBgMode();
+    if (mode === "library") {
+        const all = await dbGetAll();
+        if (all.length > 0) {
+            const blob = all[Math.floor(Math.random() * all.length)];
+            document.body.style.backgroundImage = `url(${URL.createObjectURL(blob)})`;
+            return;
+        }
+        // Library empty — fall through to random
+    }
+    document.body.style.backgroundImage = `url(${PICSUM}?random=${Date.now()})`;
+}
+
+applyBackground();
+
+// Mode toggle buttons
+const btnRandom  = document.getElementById("bg-mode-random");
+const btnLibrary = document.getElementById("bg-mode-library");
+const libraryPanel = document.getElementById("bg-library-panel");
+
+function updateModeUI() {
+    const mode = getBgMode();
+    btnRandom.classList.toggle("selected", mode === "random");
+    btnLibrary.classList.toggle("selected", mode === "library");
+    libraryPanel.classList.toggle("bg-library-visible", mode === "library");
+}
+
+btnRandom.addEventListener("click", () => {
+    setBgMode("random");
+    updateModeUI();
+    applyBackground();
+});
+
+btnLibrary.addEventListener("click", () => {
+    setBgMode("library");
+    updateModeUI();
+    applyBackground();
+});
+
+// Add images
+document.getElementById("background-input").addEventListener("change", async function () {
+    const files = [...this.files];
+    if (!files.length) return;
+    for (const file of files) await dbAdd(file);
+    this.value = "";
+    await renderBgThumbnails();
+    // Auto-switch to library mode when user adds images
+    if (getBgMode() !== "library") {
+        setBgMode("library");
+        updateModeUI();
+    }
+    await applyBackground();
+});
+
+// Thumbnail strip
+async function renderBgThumbnails() {
+    const container = document.getElementById("bg-thumbnails");
+    if (!container) return;
+
+    container.querySelectorAll("img").forEach(img => URL.revokeObjectURL(img.src));
+    container.innerHTML = "";
+
+    const entries = await dbGetAllWithKeys();
+
+    if (entries.length === 0) {
+        container.innerHTML = `<p class="bg-empty-hint">No images saved yet.</p>`;
+        return;
+    }
+
+    entries.forEach(({ key, blob }) => {
+        const url  = URL.createObjectURL(blob);
+        const wrap = document.createElement("div");
+        wrap.className = "bg-thumb-wrap";
+
+        const img = document.createElement("img");
+        img.src = url;
+        img.className = "bg-thumb";
+
+        const del = document.createElement("button");
+        del.className = "bg-thumb-delete";
+        del.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+        del.addEventListener("click", async e => {
+            e.stopPropagation();
+            URL.revokeObjectURL(url);
+            await dbDelete(key);
+            await renderBgThumbnails();
+            await applyBackground();
         });
 
-        const newFavoritesList = [...favoritesList, inputValues];
-        
-        localStorage.setItem("favorites", JSON.stringify(newFavoritesList));
-        fillFavorites(newFavoritesList);
-
-        removeNewFavoriteModal();
-    }
-
-    cancel.onclick = () => removeNewFavoriteModal();
+        wrap.appendChild(img);
+        wrap.appendChild(del);
+        container.appendChild(wrap);
+    });
 }
 
-function removeNewFavoriteModal() {
-    const addNewFavoriteModal = document.querySelector(".add-new-favorite-modal");
-    addNewFavoriteModal.classList.remove("modal-active");
-    addNewFavoriteModal.classList.add("modal-disabled");
-    
-    setTimeout(() => addNewFavoriteModal.remove(), 300);
-
-    window.removeEventListener("click", closeAddNewFavoriteModal);
-}
-
-function setFavoriteIcon() {
-    const addNewFavoriteModalImgInput = document.querySelector(".add-new-favorite-modal .favorite-img-input");
-    const [inputImg, inputFile] = [...addNewFavoriteModalImgInput.children];
-
-    inputFile.oninput = async () => {
-        inputImg.setAttribute("src", await getBaseUrl(inputFile["files"][0]));
+// Refresh thumbnails + mode UI whenever settings open
+const settingsObserver = new MutationObserver(() => {
+    if (settingsPanel.classList.contains("settings-open")) {
+        updateModeUI();
+        renderBgThumbnails();
     }
-
-    function getBaseUrl(file)  {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            let baseString = "";
-
-            reader.readAsDataURL(file);
-        
-            reader.onload = () => {
-                baseString = reader.result;
-                resolve(baseString)
-            };
-        });
-    }
-}
+});
+settingsObserver.observe(settingsPanel, { attributes: true, attributeFilter: ["class"] });

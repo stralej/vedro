@@ -4,54 +4,46 @@ The Start Page is a project that is supposed to replace your default start/home 
 ![Preview screenshot of the project on Desktop](images/preview.jpeg)
 
 ## How does it work?
-1. The background image is always taken from [Picsum](https://picsum.photos/) a website that gives you placeholder (Lorem Ipsum) images.
-2. The time in the top right corner is done with JavaScript which takes the system time and updates it every 1000 miliseconds (1 second).
-3. The message in the top left corner is also done over JavaScript and it checks the value of hours from the time and gives the approperiate message depending on the value.
-4. The search works by checking if you have a dot (.) inside of the search query and if you don't it just gives you a Google search of that. If you have a dot, then it takes you directly to the website you've given it. You do not need to add `http://` or `https://` since `https://` is added to the beginning of it automatically. If you press the search button, it will always search it on Google.
-5. Favorites are on the bottom and they are static and they cannot be edited outside from the code *(yet)*. The only way you could do that is in the **How to edit favorites?** section below.
+1. The background is either a random image from [Picsum](https://picsum.photos/) or one from your own wallpaper library — switchable from the settings panel.
+2. The time in the top right corner is done with JavaScript which takes the system time and updates it every 500 milliseconds.
+3. The message in the top left corner is also done over JavaScript and it checks the value of hours from the time and gives the appropriate message depending on the value.
+4. The search works by checking if you have a dot (.) inside of the search query and no spaces — if so it takes you directly to that website. Otherwise it searches using your selected search engine. You do not need to add `http://` or `https://` since `https://` is added to the beginning automatically. If you press the search button, it will always search using the selected search engine.
+5. Favorites are on the bottom and can be fully managed from the page — add new ones, remove them, and drag to reorder them by holding and dragging. Favicons are fetched automatically from the website URL.
+6. Settings are accessible via the gear icon in the bottom right corner. You can toggle the welcome message, time and favorites on or off, change the search engine, and manage your wallpapers.
 
-## How to set it as a start page or new tab?
+## How to install it as a browser extension?
 
-### Microsoft Edge
-1. Click on 3 dots (...) on the top right corner
-2. Click on **Settings**
-3. In the search on the left type **open these pages**
-4. Select it and click on **Add a New Page**
-5. Paste in this link `https://sluki03.github.io/start-page/` and click **Add**
+### Firefox (recommended)
+1. Go to `about:debugging`
+2. Click **This Firefox**
+3. Click **Load Temporary Add-on…**
+4. Navigate to your project folder and select the `manifest.json` file
 
-*It can only be setup as a start page when the browser is opened.*
+> For a permanent install without reloading after every restart, go to `about:config`, search for `xpinstall.signatures.required` and set it to **false**. Then go to `about:addons` → gear icon → **Install Add-on From File** and select your zipped project folder.
 
-### Brave
-1. Click on 3 horizontal lines on the top right corner
-2. Click on **Settings**
-3. Under **Settings** click on **🚀 Get started**
-4. Under **startup click on **Open a specific page or set of pages**
-5. Click on **Add a new page**
-6. Paste in this link `https://sluki03.github.io/start-page/` and click **Add**
+### Chrome / Edge / Brave
+1. Go to `chrome://extensions` (or `edge://extensions`)
+2. Toggle on **Developer mode** in the top right
+3. Click **Load unpacked**
+4. Select your project folder
 
-*It can only be setup as a start page when the browser is opened.*
+## How to manage favorites?
+Favorites are fully manageable from the page itself — no code editing needed.
 
-### Google Chrome
-1. Click on 3 dots on the top right corner
-2. Click on **Settings**
-3. On the left click on **On startup**
-4. Click on **Open a specific page or set of pages**
-5. Click on **Add a new page**
-6. Paste in this link `https://sluki03.github.io/start-page/` and click **Add**
+- **Add** — click the **+** tile in the favorites bar, enter a title and URL. The favicon is fetched automatically.
+- **Remove** — hover over a favorite and click the **✕** that appears in the top right corner, then confirm.
+- **Reorder** — click and hold a favorite for a moment, then drag it to the desired position and release.
 
-*It can only be setup as a start page when the browser is opened.*
+## How to manage wallpapers?
+Wallpapers are managed from the **Settings** panel (gear icon, bottom right).
 
-## How to edit favorites?
-1. Download the whole project and open it in the code/text editor.
-2. Add the images of the websites you want to add in the **images** folder.
-3. In **index.html** edit existing or copy-paste the already existing ones and change the **src** attribute in the **img** tag `<img src"images/your_image.png">`.
-4. You can change the name of the website link in the paragraph tag between **><** in `<p></p>`.
-5. Set the local **index.html** as the start page/new tab.
+- **Random** — a new random image from [Picsum](https://picsum.photos/) is loaded on every new tab.
+- **My library** — add your own images by clicking **Add images**. A random one from your library is picked on every new tab. Images are stored locally in IndexedDB with no size limit. Individual images can be removed by hovering over their thumbnail and clicking **✕**.
 
 ## Special thank you
 Thank you [drb0r1s](https://github.com/drb0r1s) for helping with localStorage in JS. ❤️
 
 #
-[Website link](https://sluki03.github.io/start-page/)
+[Website link](https://stralej.github.io/start-page/)
 
-If you want to stay updated make sure to **Watch** the project and **Star** it if you like it, thank you. 
+⭐️ If you want to stay updated make sure to **Watch** the project and **Star** it if you like it, thank you.

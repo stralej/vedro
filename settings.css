@@ -1,0 +1,337 @@
+.small-button {
+    cursor: pointer;
+    padding: 10px;
+    color: #fffb;
+    background-color: #0004;
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    transition: box-shadow .3s;
+}
+
+.small-button:hover {
+    box-shadow: 0 0 0 3px #0008;
+}
+
+.settings-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+.settings {
+    position: absolute;
+    width: 300px;
+    bottom: 70px;
+    right: 20px;
+    background-color: #0004;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    user-select: none;
+    transform: translateX(350px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .3s, opacity .3s;
+    max-height: calc(100vh - 100px);
+    overflow: hidden;
+}
+
+.settings-inner {
+    overflow-y: auto;
+    max-height: calc(100vh - 120px);
+    padding: 10px;
+    padding-right: 6px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #fff3 transparent;
+}
+
+.settings-inner::-webkit-scrollbar { width: 5px; }
+.settings-inner::-webkit-scrollbar-track { background: transparent; margin: 15px; }
+.settings-inner::-webkit-scrollbar-thumb { background: #fff3; border-radius: 5px; }
+.settings-inner::-webkit-scrollbar-thumb:hover { background: #fff6; }
+
+/* Toggled by JS */
+.settings.settings-open {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.settings-inner > p {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.background-section > p {
+    text-align: center;
+}
+
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-list > section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #0004;
+    border-radius: 15px;
+    padding: 10px;
+    gap: 10px;
+}
+
+.settings-list section > section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.settings-list section .checkbox {
+    background-color: #0004;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    border-radius: 5px;
+    text-align: center;
+    transition: box-shadow .3s;
+}
+
+.checkbox:hover,
+.checkbox:focus,
+.modal .modal-buttons button:hover {
+    box-shadow: 0 0 0 3px #0008;
+}
+
+.invisible-welcome {
+    transform: translateX(-300px);
+}
+
+.invisible-time {
+    transform: translateX(200px);
+}
+
+.invisible-favorites {
+    transform: translateY(400px);
+}
+
+.search-engine-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.search-engine-list {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column !important;
+    gap: 5px;
+    width: 100%;
+}
+
+.search-engine-list .search-engine {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    border-radius: 15px;
+    padding: 10px 0 10px 10px;
+    transition: .3s;
+    cursor: pointer;
+}
+
+.search-engine-list .search-engine:hover {
+    background-color: #eee3;
+}
+
+.search-engine-list .search-engine.selected {
+    background-color: #eee3;
+    cursor: default;
+}
+
+.search-engine-list .search-engine i {
+    font-size: 24px;
+    width: 30px;
+}
+
+.search-engine-list .search-engine img {
+    height: 24px;
+    width: 30px;
+}
+
+/* ── Background section ── */
+.background-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: #0004;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.background-section > p {
+    text-align: center;
+    padding-bottom: 0;
+}
+
+.background-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.bg-mode-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 8px 10px;
+    background-color: #eee3;
+    color: #fff;
+    transition: .3s;
+}
+
+.bg-mode-btn:hover {
+    background-color: #eee4;
+}
+
+.bg-mode-btn.selected {
+    background-color: #eee5;
+    cursor: default;
+}
+
+.bg-library-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height .35s ease, opacity .3s ease;
+}
+
+.bg-library-visible {
+    max-height: 300px;
+    opacity: 1;
+}
+
+.bg-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 8px 10px;
+    background-color: #eee3;
+    color: #fff;
+    transition: .3s;
+    text-align: center;
+}
+
+.bg-add-btn:hover {
+    background-color: #eee4;
+}
+
+.bg-add-btn input[type="file"] {
+    display: none;
+}
+
+/* ── Background thumbnails ── */
+.bg-thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-height: 130px;
+    overflow-y: auto;
+    padding: 2px;
+}
+
+.bg-thumbnails::-webkit-scrollbar { width: 3px; }
+.bg-thumbnails::-webkit-scrollbar-track { background: transparent; }
+.bg-thumbnails::-webkit-scrollbar-thumb { background: #fff3; border-radius: 3px; }
+.bg-thumbnails::-webkit-scrollbar-thumb:hover { background: #fff6; }
+
+.bg-thumb-wrap {
+    position: relative;
+    width: 60px;
+    height: 45px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.bg-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.bg-thumb-delete {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 16px;
+    height: 16px;
+    background: #000a;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity .2s;
+    padding: 0;
+}
+
+.bg-thumb-wrap:hover .bg-thumb-delete {
+    opacity: 1;
+}
+
+.bg-thumb-delete i {
+    font-size: 10px;
+    color: #fff;
+    line-height: 1;
+}
+
+.bg-empty-hint {
+    font-size: 11px;
+    opacity: .5;
+    text-align: center;
+    width: 100%;
+    padding: 8px 0;
+}
+
+/* ── Settings footer ── */
+.settings-footer {
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    opacity: .7;
+    padding: 8px 0 4px;
+    text-decoration: none;
+    transition: opacity .3s;
+}
+
+.settings-footer:hover {
+    opacity: .9;
+}
