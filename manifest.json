@@ -4,6 +4,11 @@
   "version": "1.0",
   "description": "Custom minimalistic and modern start page and new tab.",
   "homepage_url": "https://github.com/stralej/start-page",
+  "browser_specific_settings": {
+  "gecko": {
+    "id": "strahinja@learn-serbian.rs"
+  }
+},
   "chrome_url_overrides": {
     "newtab": "index.html"
   }
