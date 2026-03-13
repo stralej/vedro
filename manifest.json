@@ -8,8 +8,11 @@
   "gecko": {
     "id": "strahinja@learn-serbian.rs"
   }
-},
+  },
   "chrome_url_overrides": {
     "newtab": "index.html"
+  },
+  "data_collection_permissions": {
+  "unknown": false
   }
 }
