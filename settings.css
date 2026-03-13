@@ -103,7 +103,11 @@
 .checkbox:hover,
 .checkbox:focus,
 .modal .modal-buttons button:hover {
-    box-shadow: 0 0 0 3px #0008;
+    box-shadow: 0 0 0 2px #fff4;
+}
+
+.modal .modal-buttons button {
+    background-color: #fff2;
 }
 
 .invisible-welcome {
