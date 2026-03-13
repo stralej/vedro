@@ -4,15 +4,16 @@
   "version": "1.0",
   "description": "Custom minimalistic and modern start page and new tab.",
   "homepage_url": "https://github.com/stralej/start-page",
+  "permissions": [],
   "browser_specific_settings": {
-  "gecko": {
-    "id": "strahinja@learn-serbian.rs"
-  }
+    "gecko": {
+      "id": "strahinja@learn-serbian.rs",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
   },
   "chrome_url_overrides": {
     "newtab": "index.html"
-  },
-  "data_collection_permissions": {
-  "unknown": false
   }
 }
