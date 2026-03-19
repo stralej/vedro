@@ -2,8 +2,6 @@
   <img src="vedro.svg" alt="Vedro" height="48">
 </p>
 
-# Vedro
-
 > *Clear sky, clear mind.*
 
 A minimalistic frosted-glass new tab extension. Replaces your browser's default new tab with something you actually want to look at.
@@ -81,4 +79,4 @@ There's one. You'll find it.
 
 ---
 
-[stralej.github.io/start-page](https://stralej.github.io/start-page/) · ⭐ star it if you like it
+⭐ star it if you like it
