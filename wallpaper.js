@@ -62,51 +62,21 @@ async function dbDelete(key) {
 
 const wallpaperEl = document.getElementById("wallpaper");
 
-function isBottomLeftDark(imgSrc) {
-    return new Promise(resolve => {
-        const canvas = document.createElement("canvas");
-        canvas.width = 50;
-        canvas.height = 50;
-        const ctx = canvas.getContext("2d");
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => {
-            // Sample a 50x50 patch at bottom-left of the image
-            ctx.drawImage(img, 0, img.height - 50, 50, 50, 0, 0, 50, 50);
-            const data = ctx.getImageData(0, 0, 50, 50).data;
-            let brightness = 0;
-            for (let i = 0; i < data.length; i += 4) {
-                brightness += (data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114);
-            }
-            brightness /= (data.length / 4);
-            resolve(brightness < 100); // dark if average brightness < 100/255
-        };
-        img.onerror = () => resolve(true); // assume dark on error
-        img.src = imgSrc;
-    });
-}
-
 function setWallpaper(url) {
     const img = new Image();
-    img.onload = async () => {
+    img.onload = () => {
         wallpaperEl.style.transition = "opacity 0.35s ease";
         wallpaperEl.style.opacity = "0";
-        setTimeout(async () => {
+        setTimeout(() => {
             wallpaperEl.style.backgroundImage = `url(${url})`;
             wallpaperEl.style.opacity = "1";
-            const dark = await isBottomLeftDark(url);
-            document.getElementById("secret-text")?.classList.toggle("on-dark", dark);
         }, 350);
     };
     img.onerror = () => {
         wallpaperEl.style.backgroundImage = `url(${url})`;
         wallpaperEl.style.opacity = "1";
-        document.getElementById("secret-text")?.classList.add("on-dark");
     };
     img.src = url;
-
-    // While loading, treat as dark
-    document.getElementById("secret-text")?.classList.add("on-dark");
 }
 
 function getBgMode() { return localStorage.getItem("bgMode") ?? "random"; }

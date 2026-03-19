@@ -33,6 +33,7 @@
     padding: 10px;
     user-select: none;
     transition: transform .3s;
+    z-index: 2;
 }
 
 .invisible-favorites {
