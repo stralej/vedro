@@ -41,5 +41,11 @@ export const searchEngineList = [
         title: "Yandex",
         image: "images/yandex.svg",
         link: "https://yandex.com/search/?text="
+    },
+
+    {
+        title: "Brave",
+        image: "images/brave.png",
+        link: "https://search.brave.com/search?q="
     }
 ];

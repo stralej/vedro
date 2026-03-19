@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Start page</title>
+    <title>Vedro</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="modals.css">
     <link rel="stylesheet" href="settings.css">
@@ -12,29 +13,79 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+    <div id="wallpaper"></div>
+    <div style="position:fixed;inset:0;background:rgba(0,0,0,0.3);pointer-events:none;z-index:0;"></div>
+    <div id="modal-backdrop"></div>
+    <div id="secret-text"></div>
+
+    <template data-template="onboarding-modal">
+        <div class="modal onboarding-modal">
+            <img src="vedro.svg" class="onboarding-logo" alt="Vedro">
+            <hr class="onboarding-divider">
+            <p class="onboarding-sub" data-i18n="onboard_sub"></p>
+            <div class="onboarding-browsers">
+                <button class="onboard-browser-btn active" data-browser="chrome">Chrome</button>
+                <button class="onboard-browser-btn" data-browser="firefox">Firefox</button>
+                <button class="onboard-browser-btn" data-browser="edge">Edge</button>
+                <button class="onboard-browser-btn" data-browser="brave">Brave</button>
+            </div>
+            <p class="onboarding-instruction"></p>
+            <div class="modal-buttons">
+                <button class="onboard-remind-btn" data-i18n="onboard_remind"></button>
+                <button class="onboard-dismiss-btn" data-i18n="onboard_dismiss"></button>
+            </div>
+        </div>
+    </template>
+
+    <template data-template="secret-modal">
+        <div class="modal secret-modal">
+            <p class="secret-modal-title" data-i18n="secret_title"></p>
+            <p class="secret-modal-sub" data-i18n="secret_sub"></p>
+            <div class="fav-modal-fields">
+                <div class="fav-modal-row">
+                    <label data-i18n="secret_label"></label>
+                    <input type="text" id="secret-input" data-i18n-placeholder="secret_placeholder">
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="secret-save-btn" data-i18n="fav_save_btn"></button>
+                <button class="secret-clear-btn" data-i18n="fav_remove_btn"></button>
+                <button class="secret-cancel-btn" data-i18n="fav_cancel_btn"></button>
+            </div>
+        </div>
+    </template>
     <header class="header">
 
         <div class="welcome">
             <p id="welcome"></p>
         </div>
 
+        <div class="weather" id="weather">
+            <p id="weather-display">...</p>
+        </div>
+
         <div class="time">
             <p id="time">00:00:00</p>
+            <p id="date" class="date-sub"></p>
         </div>
         
     </header>
 
     <div class="search">
-        <input type="text" placeholder="Search" id="search" autofocus>
-        <i class="fa-solid fa-search small-button" title="Search on Google"></i>
+        <div class="search-wrap">
+            <input type="text" data-i18n-placeholder="search_placeholder" id="search" autofocus>
+            <button class="search-btn" data-i18n-title="search_title">
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
     </div>
 
     <div class="favorites-wrapper">
-        <div class="favorites">
+        <div class="favorites" id="favorites-bar">
             <a class="add-new">
                 <article>
                     <i class="fa-solid fa-plus"></i>
-                    <p>add new</p>
+                    <p data-i18n="add_new">add new</p>
                 </article>
             </a>
     
@@ -44,98 +95,157 @@
                         <img src="" alt="">
                         <p></p>
                     </article>
-                    <i class="fa-solid fa-xmark favorite-x close-favorite-disabled" style="color: #ccc;"></i>
                 </a>
             </template>
     
             <template data-template="add-new-favorite-modal">
                 <div class="modal add-new-favorite-modal">
-                    <p>Add a new favorite</p>
-
-                    <div class="favorite-info">
-                        <div class="favorite-text">
-                            <div class="favorite-title">
-                                <label for="favorite-title">title</label>
-                                <input type="text" id="favorite-title">
-                            </div>
-                            <div class="favorite-link">
-                                <label for="favorite-link">link</label>
-                                <input type="text" id="favorite-link">
-                            </div>
+                    <p data-i18n="fav_add_title">Add a new favorite</p>
+                    <div class="fav-modal-fields">
+                        <div class="fav-modal-row">
+                            <label for="favorite-title" data-i18n="fav_label_title">Title</label>
+                            <input type="text" id="favorite-title" placeholder="YouTube">
                         </div>
-                        <div class="favorite-img-input">
-                            <img src="./images/image-solid.png" alt="NO IMAGE">
-                            <input type="file" accept=".jpg .png .jpeg .gif .ico">
+                        <div class="fav-modal-row">
+                            <label for="favorite-link" data-i18n="fav_label_link">Link</label>
+                            <input type="text" id="favorite-link" placeholder="youtube.com">
+                        </div>
+                        <div class="fav-modal-favicon-row">
+                            <div class="fav-modal-favicon-preview">
+                                <img src="./images/image-solid.png" alt="">
+                            </div>
+                            <label class="fav-modal-upload-btn">
+                                <span data-i18n="fav_custom_icon">Custom icon</span>
+                                <input type="file" accept=".jpg .png .jpeg .gif .ico">
+                            </label>
                         </div>
                     </div>
-    
                     <div class="modal-buttons">
-                        <button class="disabled-favorite-button">add</button>
-                        <button>cancel</button>
+                        <button class="disabled-favorite-button" data-i18n="fav_add_btn">Add</button>
+                        <button data-i18n="fav_cancel_btn">Cancel</button>
                     </div>
                 </div>
             </template>
 
             <template data-template="confirmation-modal">
                 <div class="modal confirmation-modal">
-                    <p></p>
+                    <div class="confirmation-header">
+                        <img class="confirmation-favicon" src="" alt="">
+                        <p class="confirmation-title"></p>
+                        <p class="confirmation-sub" data-i18n="fav_cant_undo">This can't be undone.</p>
+                    </div>
                     <div class="modal-buttons">
-                        <button><i class="fa-solid fa-check"></i></button>
-                        <button><i class="fa-solid fa-xmark" style="color: #ccc;"></i></button>
+                        <button class="confirm-remove" data-i18n="fav_remove_btn">Remove</button>
+                        <button class="confirm-cancel" data-i18n="fav_cancel_btn">Cancel</button>
+                    </div>
+                </div>
+            </template>
+
+            <template data-template="edit-favorite-modal">
+                <div class="modal add-new-favorite-modal">
+                    <p data-i18n="fav_edit_title">Edit favorite</p>
+                    <div class="fav-modal-fields">
+                        <div class="fav-modal-row">
+                            <label for="favorite-title" data-i18n="fav_label_title">Title</label>
+                            <input type="text" id="favorite-title" placeholder="YouTube">
+                        </div>
+                        <div class="fav-modal-row">
+                            <label for="favorite-link" data-i18n="fav_label_link">Link</label>
+                            <input type="text" id="favorite-link" placeholder="youtube.com">
+                        </div>
+                        <div class="fav-modal-favicon-row">
+                            <div class="fav-modal-favicon-preview">
+                                <img src="./images/image-solid.png" alt="">
+                            </div>
+                            <label class="fav-modal-upload-btn">
+                                <span data-i18n="fav_custom_icon">Custom icon</span>
+                                <input type="file" accept=".jpg .png .jpeg .gif .ico">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-buttons">
+                        <button data-i18n="fav_save_btn">Save</button>
+                        <button data-i18n="fav_cancel_btn">Cancel</button>
                     </div>
                 </div>
             </template>
         </div>
     </div>
 
-    <div class="settings-button" title="Settings">
+    <div class="settings-button" data-i18n-title="settings_title">
         <i class="fa-solid fa-gear small-button"></i>
     </div>
 
     <div class="settings" id="settings">
         <div class="settings-inner">
-            <p>Settings</p>
+            <p data-i18n="settings_title">Settings</p>
 
             <section class="settings-list">
                 <section class="display-list">
-                    <section>
-                        <p>Show welcome message</p>
-                        <div class="checkbox"><i class="fa-solid fa-check" id="welcome-checkbox"></i></div>
-                    </section>
-                    <section>
-                        <p>Show time</p>
-                        <div class="checkbox"><i class="fa-solid fa-check" id="time-checkbox"></i></div>
-                    </section>
-                    <section>
-                        <p>Show favorites</p>
-                        <div class="checkbox"><i class="fa-solid fa-check" id="favorites-checkbox"></i></div>
-                    </section>
+                    <div class="setting-row">
+                        <div class="setting-item" id="welcome-checkbox"><span data-i18n="toggle_welcome">Welcome</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                        <div class="setting-item" id="time-checkbox"><span data-i18n="toggle_time">Time</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-item" id="date-checkbox"><span data-i18n="toggle_date">Date</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                        <div class="setting-item" id="clock24-checkbox"><span data-i18n="toggle_clock24">24h</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-item" id="seconds-checkbox"><span data-i18n="toggle_seconds">Seconds</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                        <div class="setting-item" id="weather-checkbox"><span data-i18n="toggle_weather">Weather</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-item" id="favorites-checkbox"><span data-i18n="toggle_favorites">Favorites</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                        <div class="setting-item" id="celsius-checkbox"><span data-i18n="toggle_celsius">Celsius</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                    </div>
+                    <div class="setting-row">
+                        <div class="setting-item" id="addnew-checkbox"><span data-i18n="toggle_addnew">Add new</span><div class="setting-check"><i class="fa-solid fa-check"></i></div></div>
+                    </div>
+                </section>
+
+                <section class="appearance-section">
+                    <div class="slider-row">
+                        <label data-i18n="blur">Blur</label>
+                        <div class="custom-slider" id="blur-slider">
+                            <div class="custom-slider-track">
+                                <div class="custom-slider-fill"></div>
+                                <div class="custom-slider-thumb"></div>
+                            </div>
+                        </div>
+                        <span id="blur-value">10px</span>
+                    </div>
                 </section>
                 
                 <section class="background-section">
-                    <p>Wallpapers</p>
+                    <p data-i18n="wallpapers">Wallpapers</p>
                     <div class="background-controls">
-                        <button class="bg-mode-btn" id="bg-mode-random" title="Use random Picsum photos">
-                            <i class="fa-solid fa-rotate"></i> Random
+                        <button class="bg-mode-btn" id="bg-mode-random" data-i18n-title="random_title">
+                            <i class="fa-solid fa-rotate"></i> <span data-i18n="random">Random</span>
                         </button>
-                        <button class="bg-mode-btn" id="bg-mode-library" title="Use your saved images">
-                            <i class="fa-solid fa-images"></i> My library
+                        <button class="bg-mode-btn" id="bg-mode-vedro" data-i18n-title="vedro_title">
+                            <img src="favicon.svg" style="width:14px;height:14px;object-fit:contain;flex-shrink:0;"> <span data-i18n="vedro">Vedro</span>
+                        </button>
+                        <button class="bg-mode-btn" id="bg-mode-library" data-i18n-title="library_title">
+                            <i class="fa-solid fa-images"></i> <span data-i18n="my_library">My library</span>
                         </button>
                     </div>
                     <div id="bg-library-panel" class="bg-library-panel">
                         <label class="bg-add-btn">
-                            <i class="fa-solid fa-plus"></i> Add images
+                            <i class="fa-solid fa-plus"></i> <span data-i18n="add_images">Add images</span>
                             <input type="file" accept=".jpg,.jpeg,.png,.webp,.gif" id="background-input" multiple>
                         </label>
                         <div id="bg-thumbnails" class="bg-thumbnails">
-                            <p class="bg-empty-hint">No images saved yet.</p>
+                            <p class="bg-empty-hint" data-i18n="no_images">No images saved yet.</p>
                         </div>
                     </div>
                 </section>
 
                 <section class="search-engine-wrapper">
-                    <p>Search engine</p>
-                    <section class="search-engine-list">
+                    <div class="language-header" id="search-engine-header">
+                        <p data-i18n="search_engine">Search engine</p>
+                        <i class="fa-solid fa-chevron-down language-chevron" id="search-engine-chevron"></i>
+                    </div>
+                    <section class="search-engine-list bg-library-panel" id="search-engine-list">
                         <template data-template="search-engine">
                             <div class="search-engine">
                                 <img src="" alt="">
@@ -144,8 +254,18 @@
                         </template>
                     </section>
                 </section>
+
+                <section class="language-section">
+                    <div class="language-header" id="language-header">
+                        <p data-i18n="language">Language</p>
+                        <i class="fa-solid fa-chevron-down language-chevron" id="language-chevron"></i>
+                    </div>
+                    <div class="language-list bg-library-panel" id="language-list"></div>
+                </section>
             </section>
-            <a class="settings-footer" href="https://github.com/stralej" target="_blank">@stralej · 2026 · Built with ❤️</a>
+            <a class="settings-footer" href="https://github.com/stralej" target="_blank">
+                <img src="vedro.svg" alt="Vedro" class="settings-footer-logo"> · @stralej · 2026
+            </a>
         </div>
     </div>
 

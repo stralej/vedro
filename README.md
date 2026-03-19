@@ -1,49 +1,84 @@
-# Start Page
-The Start Page is a project that is supposed to replace your default start/home page in the browser with a modern and minimalistic one. The one when you open your browser or when you open a new tab inside of it.
+<p align="center">
+  <img src="vedro.svg" alt="Vedro" height="48">
+</p>
 
-![Preview screenshot of the project on Desktop](images/preview.jpeg)
+# Vedro
 
-## How does it work?
-1. The background is either a random image from [Picsum](https://picsum.photos/) or one from your own wallpaper library — switchable from the settings panel.
-2. The time in the top right corner is done with JavaScript which takes the system time and updates it every 500 milliseconds.
-3. The message in the top left corner is also done over JavaScript and it checks the value of hours from the time and gives the appropriate message depending on the value.
-4. The search works by checking if you have a dot (.) inside of the search query and no spaces — if so it takes you directly to that website. Otherwise it searches using your selected search engine. You do not need to add `http://` or `https://` since `https://` is added to the beginning automatically. If you press the search button, it will always search using the selected search engine.
-5. Favorites are on the bottom and can be fully managed from the page — add new ones, remove them, and drag to reorder them by holding and dragging. Favicons are fetched automatically from the website URL.
-6. Settings are accessible via the gear icon in the bottom right corner. You can toggle the welcome message, time and favorites on or off, change the search engine, and manage your wallpapers.
+> *Clear sky, clear mind.*
 
-## How to install it as a browser extension?
+A minimalistic frosted-glass new tab extension. Replaces your browser's default new tab with something you actually want to look at.
 
-### Firefox (recommended)
-1. Go to `about:debugging`
-2. Click **This Firefox**
-3. Click **Load Temporary Add-on…**
-4. Navigate to your project folder and select the `manifest.json` file
+![Preview](images/preview.jpeg)
 
-> For a permanent install without reloading after every restart, go to `about:config`, search for `xpinstall.signatures.required` and set it to **false**. Then go to `about:addons` → gear icon → **Install Add-on From File** and select your zipped project folder.
+---
+
+## Install
+
+### Firefox
+[Get it on Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/vedro/)
 
 ### Chrome / Edge / Brave
-1. Go to `chrome://extensions` (or `edge://extensions`)
-2. Toggle on **Developer mode** in the top right
-3. Click **Load unpacked**
-4. Select your project folder
+Coming soon to the Chrome Web Store. Until then:
+1. [Download the repository](https://github.com/stralej/start-page/archive/refs/heads/main.zip) and unzip it
+2. Go to `chrome://extensions` (or `edge://extensions` / `brave://extensions`)
+3. Enable **Developer mode** in the top right corner
+4. Click **Load unpacked**
+5. Select the unzipped project folder
 
-## How to manage favorites?
-Favorites are fully manageable from the page itself — no code editing needed.
+The extension will stay installed until you remove it manually.
 
-- **Add** — click the **+** tile in the favorites bar, enter a title and URL. The favicon is fetched automatically.
-- **Remove** — hover over a favorite and click the **✕** that appears in the top right corner, then confirm.
-- **Reorder** — click and hold a favorite for a moment, then drag it to the desired position and release.
+---
 
-## How to manage wallpapers?
-Wallpapers are managed from the **Settings** panel (gear icon, bottom right).
+## What's inside
 
-- **Random** — a new random image from [Picsum](https://picsum.photos/) is loaded on every new tab.
-- **My library** — add your own images by clicking **Add images**. A random one from your library is picked on every new tab. Images are stored locally in IndexedDB with no size limit. Individual images can be removed by hovering over their thumbnail and clicking **✕**.
+### Wallpapers
+Three modes, switchable from settings:
+- **Random** — a fresh image from [Picsum](https://picsum.photos/) every tab
+- **Vedro** — a curated pack of wallpapers included with the extension
+- **My library** — your own images, stored locally in IndexedDB. Add, preview, and remove them from the settings panel
 
-## Special thank you
-Thank you [drb0r1s](https://github.com/drb0r1s) for helping with localStorage in JS. ❤️
+### Search
+Type and hit enter. If your query has a dot and no spaces it goes directly to that URL — otherwise it searches using your chosen engine. Supports Google, DuckDuckGo, Bing, Yahoo, Yandex, and Brave Search. Press `S` or `Space` to focus the search bar from anywhere on the page.
 
-#
-[Website link](https://stralej.github.io/start-page/)
+### Favorites
+Fully managed from the page — no code editing needed.
+- **Add** — click the `+` tile, enter a title and URL. Favicon is fetched automatically. You can also right-click anywhere on the favorites bar to add a new one
+- **Edit / Remove** — right-click any favorite
+- **Reorder** — click and hold, then drag to reposition
 
-⭐️ If you want to stay updated make sure to **Watch** the project and **Star** it if you like it, thank you.
+### Weather
+Shows current conditions and your city in the top center. Uses [Open-Meteo](https://open-meteo.com/) — no API key needed. Location is detected automatically. Toggle Celsius / Fahrenheit from settings.
+
+### Clock
+Displays time and date in the top right. Configurable: 12 or 24-hour format, seconds on or off. Each digit animates individually when it changes.
+
+### Languages
+Supports Български, Deutsch, English, Magyar, Slovenščina, Srpski, Српски, and Suomi. Auto-detects your browser language on first visit, remembers your choice after that.
+
+### Appearance
+Adjust the panel blur intensity from the settings slider with a smooth snapping animation. All panels share the same frosted-glass aesthetic — backdrop blur, subtle borders, soft transparency.
+
+### Settings
+Toggle individual UI elements on or off — welcome message, clock, date, seconds, weather, favorites, the add new button, and Celsius mode. All toggles animate smoothly.
+
+---
+
+## First launch
+
+On your first visit, a short onboarding modal will guide you through setting Vedro as your homepage. It auto-detects your browser (Chrome, Firefox, Edge, or Brave) and shows step-by-step instructions. Dismiss it permanently or ask to be reminded next session.
+
+---
+
+## Secret
+
+There's one. You'll find it.
+
+---
+
+## Special thanks
+
+[drb0r1s](https://github.com/drb0r1s) for the localStorage help. ❤️
+
+---
+
+[stralej.github.io/start-page](https://stralej.github.io/start-page/) · ⭐ star it if you like it

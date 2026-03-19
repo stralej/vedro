@@ -1,10 +1,21 @@
 {
   "manifest_version": 3,
-  "name": "Start Page",
-  "version": "1.0",
-  "description": "Custom minimalistic and modern start page and new tab.",
+  "name": "Vedro",
+  "version": "2.0",
+  "description": "A minimalistic, frosted-glass new tab. Clear sky, clear mind.",
   "homepage_url": "https://github.com/stralej/start-page",
-  "permissions": [],
+  "permissions": ["geolocation"],
+  "host_permissions": [
+    "https://api.open-meteo.com/*",
+    "https://ipapi.co/*",
+    "https://nominatim.openstreetmap.org/*"
+  ],
+  "icons": {
+    "16":  "images/icon-16.png",
+    "32":  "images/icon-32.png",
+    "48":  "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
   "browser_specific_settings": {
     "gecko": {
       "id": "strahinja@learn-serbian.rs",
