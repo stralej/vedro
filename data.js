@@ -7,7 +7,7 @@ export const fList = [
     {
         title: "github",
         image: "https://www.google.com/s2/favicons?domain=https://github.com&sz=64",
-        link: "https://github.com"
+        link: "https://github.com/"
     }
 ];
 

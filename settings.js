@@ -305,6 +305,7 @@ export function renderSecretText() {
     const el   = document.getElementById("secret-text");
     const text = localStorage.getItem("secretText") || "";
     el.textContent = text;
+    document.title = localStorage.getItem("secretTabTitle") || "Vedro";
 }
 
 function openSecretModal() {
@@ -317,8 +318,10 @@ function openSecretModal() {
         modal.classList.add("modal-active");
     }, 10);
 
-    const secretInput = modal.querySelector("#secret-input");
-    secretInput.value = localStorage.getItem("secretText") || "";
+    const secretInput    = modal.querySelector("#secret-input");
+    const secretTabInput = modal.querySelector("#secret-tab-input");
+    secretInput.value    = localStorage.getItem("secretText") || "";
+    secretTabInput.value = localStorage.getItem("secretTabTitle") || "";
 
     const saveBtn   = modal.querySelector(".secret-save-btn");
     const clearBtn  = modal.querySelector(".secret-clear-btn");
@@ -327,6 +330,9 @@ function openSecretModal() {
     saveBtn.addEventListener("click", e => {
         e.stopPropagation();
         localStorage.setItem("secretText", secretInput.value.trim());
+        const tabTitle = secretTabInput.value.trim();
+        if (tabTitle) localStorage.setItem("secretTabTitle", tabTitle);
+        else localStorage.removeItem("secretTabTitle");
         renderSecretText();
         removeAddModal(modal);
     });
@@ -334,6 +340,7 @@ function openSecretModal() {
     clearBtn.addEventListener("click", e => {
         e.stopPropagation();
         localStorage.removeItem("secretText");
+        localStorage.removeItem("secretTabTitle");
         renderSecretText();
         removeAddModal(modal);
     });

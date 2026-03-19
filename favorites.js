@@ -148,7 +148,7 @@ function openConfirmationModal(anchor, favorite, list) {
             hideBackdrop();
             modal.remove();
             setTimeout(() => {
-                const newList = list.filter(f => f.link !== anchor.href);
+                const newList = list.filter(f => f.link.replace(/\/$/, "") !== anchor.href.replace(/\/$/, ""));
                 fillFavorites(newList);
             }, 270);
         });

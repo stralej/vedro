@@ -63,7 +63,7 @@ body.loaded {
     font-size: 72px;
     font-weight: 900;
     font-stretch: condensed;
-    color: rgba(255,255,255,0.06);
+    color: transparent;
     -webkit-text-stroke: 1.5px rgba(255,255,255,0.5);
     pointer-events: none;
     z-index: 1;
@@ -73,8 +73,12 @@ body.loaded {
     text-transform: uppercase;
     user-select: none;
     word-break: break-word;
-    mix-blend-mode: overlay;
     filter: drop-shadow(0 0 12px rgba(255,255,255,0.3)) drop-shadow(0 0 40px rgba(255,255,255,0.12));
+    transition: -webkit-text-stroke .7s ease;
+}
+
+#secret-text.on-dark {
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.8);
 }
 
 .welcome {
