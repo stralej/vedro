@@ -2,6 +2,8 @@
   <img src="vedro.svg" alt="Vedro" height="48">
 </p>
 
+<hr>
+
 > *Clear sky, clear mind.*
 
 A minimalistic frosted-glass new tab extension. Replaces your browser's default new tab with something you actually want to look at.
