@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Vedro",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A minimalistic, frosted-glass new tab. Clear sky, clear mind.",
   "homepage_url": "https://github.com/stralej/vedro",
   "permissions": ["geolocation"],
