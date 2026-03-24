@@ -14,51 +14,65 @@ A minimalistic frosted-glass new tab extension. Replaces your browser's default 
 
 ## Install
 
-### Firefox
+### 🦊 Firefox
 [Get it on Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/vedro/)
 
-### Chrome / Edge / Brave
-Coming soon to the Chrome Web Store. Until then:
-1. [Download the repository](https://github.com/stralej/start-page/archive/refs/heads/main.zip) and unzip it
-2. Go to `chrome://extensions` (or `edge://extensions` / `brave://extensions`)
-3. Enable **Developer mode** in the top right corner
+### 🌐 Chrome
+1. [Download the repository](https://github.com/stralej/vedro/archive/refs/heads/main.zip) and unzip it
+2. Open Chrome and go to `chrome://extensions`
+3. Enable **Developer mode** using the toggle in the top right corner
+4. Click **Load unpacked**
+5. Select the unzipped project folder
+6. Vedro will appear in your extensions list — open a new tab to see it in action
+
+The extension stays installed until you remove it manually. To update, download the latest version, replace the folder contents, and click the refresh icon on the extension card in `chrome://extensions`.
+
+### 🔵 Edge
+1. [Download the repository](https://github.com/stralej/vedro/archive/refs/heads/main.zip) and unzip it
+2. Open Edge and go to `edge://extensions`
+3. Enable **Developer mode** using the toggle in the bottom left
 4. Click **Load unpacked**
 5. Select the unzipped project folder
 
-The extension will stay installed until you remove it manually.
+### 🦁 Brave
+1. [Download the repository](https://github.com/stralej/vedro/archive/refs/heads/main.zip) and unzip it
+2. Open Brave and go to `brave://extensions`
+3. Enable **Developer mode** using the toggle in the top right corner
+4. Click **Load unpacked**
+5. Select the unzipped project folder
 
 ---
 
 ## What's inside
 
-### Wallpapers
+### 🖼️ Wallpapers
 Three modes, switchable from settings:
 - **Random** — a fresh image from [Picsum](https://picsum.photos/) every tab
 - **Vedro** — a curated pack of wallpapers included with the extension
 - **My library** — your own images, stored locally in IndexedDB. Add, preview, and remove them from the settings panel
 
-### Search
+### 🔍 Search
 Type and hit enter. If your query has a dot and no spaces it goes directly to that URL — otherwise it searches using your chosen engine. Supports Google, DuckDuckGo, Bing, Yahoo, Yandex, and Brave Search. Press `S` or `Space` to focus the search bar from anywhere on the page.
 
-### Favorites
+### ⭐ Favorites
 Fully managed from the page — no code editing needed.
 - **Add** — click the `+` tile, enter a title and URL. Favicon is fetched automatically. You can also right-click anywhere on the favorites bar to add a new one
 - **Edit / Remove** — right-click any favorite
 - **Reorder** — click and hold, then drag to reposition
 
-### Weather
+### 🌤️ Weather
 Shows current conditions and your city in the top center. Uses [Open-Meteo](https://open-meteo.com/) — no API key needed. Location is detected automatically. Toggle Celsius / Fahrenheit from settings.
 
-### Clock
+### 🕐 Clock
 Displays time and date in the top right. Configurable: 12 or 24-hour format, seconds on or off. Each digit animates individually when it changes.
 
-### Languages
-Supports Български, Deutsch, English, Magyar, Slovenščina, Srpski, Српски, and Suomi. Auto-detects your browser language on first visit, remembers your choice after that.
+### 🌍 Languages
+Supports Български, Dansk, Deutsch, English, Magyar, Norsk, Slovenščina, Srpski, Српски, Suomi, and Svenska. Auto-detects your browser language on first visit, remembers your choice after that.
 
-### Appearance
+### 🎨 Appearance
 Adjust the panel blur intensity from the settings slider with a smooth snapping animation. All panels share the same frosted-glass aesthetic — backdrop blur, subtle borders, soft transparency.
 
-### Settings
+### ⚙️ Settings
 Toggle individual UI elements on or off — welcome message, clock, date, seconds, weather, favorites, the add new button, and Celsius mode. All toggles animate smoothly.
 
 ---
@@ -81,4 +95,5 @@ There's one. You'll find it.
 
 ---
 
-⭐ star it if you like it
+## Test it out
+[stralej.github.io/vedro](https://stralej.github.io/vedro/) · ⭐ star it if you like it
